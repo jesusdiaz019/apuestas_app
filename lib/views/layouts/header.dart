@@ -40,7 +40,7 @@ class _HeaderLayoutState extends State<HeaderLayout> {
           Expanded(
             child: AnimatedContainer(
               color: Theme.of(context).splashColor,
-              duration: Duration(milliseconds: 400),
+              duration: Duration(milliseconds: 200),
               height: widget._showInfobar ? 35.0 : 0.0,
               child: Row(
                 children: [
@@ -64,7 +64,7 @@ class _HeaderLayoutState extends State<HeaderLayout> {
         children: [
           Expanded(
             child: AnimatedContainer(
-              duration: Duration(milliseconds: 400),
+              duration: Duration(milliseconds: 200),
               height: widget._showAppbar ? 80.0 : 40.0,
               decoration: new BoxDecoration(
                 color: Colors.white,

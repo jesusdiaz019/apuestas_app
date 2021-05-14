@@ -5,7 +5,6 @@ import 'package:apuestas_app/widgets/switch.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:apuestas_app/widgets/custom_dropdown.dart' as custom;
 
 class RegistroLayout extends StatefulWidget {
   @override

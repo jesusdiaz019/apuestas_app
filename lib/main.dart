@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:apuestas_app/views/login/login_view.dart';
-import 'package:apuestas_app/views/menu/menu_view.dart';
+import 'package:apuestas_app/views/example.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         const Locale('fr'),
         const Locale('es'),
       ],
-      home: MenuView(),
+      home: MyExample(),
     );
   }
 }

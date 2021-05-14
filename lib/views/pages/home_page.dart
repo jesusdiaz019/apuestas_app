@@ -5,6 +5,7 @@ import 'package:apuestas_app/views/layouts/home/left_layout.dart';
 import 'package:apuestas_app/views/pages/deportes_page.dart';
 import 'package:apuestas_app/widgets/slider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:apuestas_app/views/menu/menu_view_drawer.dart';
@@ -54,11 +55,13 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final bloc = HomeBloc();
   TabController tabController;
+  ScrollController _scrollController;
+  ScrollController _scrollControllerLeft;
+  ScrollController _scrollControllerRight;
   bool _showInfobar = true;
   bool _showAppbar = true;
   bool isScrollingDown = false;
   bool isSwitched = false;
-  bool _showSlider = true;
   bool isBarShow = true;
   bool _isRightShow = false;
   bool _isLeftShow = false;
@@ -68,17 +71,10 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: bloc.tabs.length);
-    tabController.addListener(() {
-      if (tabController.index == 0) {
-        _showSlider = true;
-        setState(() {});
-      } else {
-        _showAppbar = true;
-        _showInfobar = true;
-        _showSlider = false;
-        setState(() {});
-      }
-    });
+
+    _scrollController = new ScrollController();
+    _scrollControllerLeft = new ScrollController();
+    _scrollControllerRight = new ScrollController();
     bloc.scrollViewController = new ScrollController();
     bloc.scrollViewController.addListener(() {
       if (bloc.scrollViewController.position.userScrollDirection ==
@@ -134,139 +130,190 @@ class _HomePageState extends State<HomePage>
                     _showAppbar, _showInfobar, bloc.tabs, tabController),
                 Expanded(
                   flex: 3,
-                  child: Scrollbar(
-                    controller: bloc.scrollViewController,
-                    isAlwaysShown: true,
-                    showTrackOnHover: true,
-                    child: SingleChildScrollView(
-                      controller: bloc.scrollViewController,
-                      child: Column(
-                        children: [
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 0),
-                            height: _showSlider ? 550.0 : 0.0,
-                            child: SliderWidget(),
+                  child: Column(
+                    children: [
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: bodyDuration()),
+                        height: bodyHeight(),
+                        child: TabBarView(controller: tabController, children: [
+                          Scrollbar(
+                            controller: bloc.scrollViewController,
+                            isAlwaysShown: true,
+                            showTrackOnHover: true,
+                            child: ListView(
+                              controller: bloc.scrollViewController,
+                              children: [
+                                Container(
+                                  height: 550,
+                                  child: SliderWidget(),
+                                ),
+                                Container(
+                                  height: 500,
+                                  child: Text('1'),
+                                ),
+                                Container(
+                                  height: 400,
+                                  child: FooterLayout(),
+                                ),
+                              ],
+                            ),
                           ),
-                          Container(
-                            height: MediaQuery.of(context).size.height - 115,
-                            child: TabBarView(
-                                controller: tabController,
+                          ListView(children: [
+                            Container(
+                              height: 600,
+                              child: Stack(
                                 children: [
-                                  Text('1'),
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(top: 50),
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            _isLeftShow
-                                                ? Expanded(
-                                                    flex: 1,
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                      top: 50,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        _isLeftShow
+                                            ? Expanded(
+                                                flex: 1,
+                                                child: Scrollbar(
+                                                  controller:
+                                                      _scrollControllerLeft,
+                                                  isAlwaysShown: true,
+                                                  showTrackOnHover: true,
+                                                  child: SingleChildScrollView(
+                                                    controller:
+                                                        _scrollControllerLeft,
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          color: Colors.blue,
+                                                          height: 600,
+                                                          child: LeftLayout(),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(),
+                                        Expanded(
+                                          flex: 3,
+                                          child: Scrollbar(
+                                              controller: _scrollController,
+                                              isAlwaysShown: true,
+                                              showTrackOnHover: true,
+                                              child: SingleChildScrollView(
+                                                controller: _scrollController,
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      height: 600,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    Container(
+                                                      height: 600,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )),
+                                        ),
+                                        _isRightShow
+                                            ? Expanded(
+                                                flex: 1,
+                                                child: Scrollbar(
+                                                  controller:
+                                                      _scrollControllerRight,
+                                                  isAlwaysShown: true,
+                                                  showTrackOnHover: true,
+                                                  child: SingleChildScrollView(
+                                                    controller:
+                                                        _scrollControllerRight,
                                                     child: Container(
                                                       color: Colors.blue,
-                                                      height: double.infinity,
-                                                      width: double.infinity,
+                                                      height: 600,
                                                       child: LeftLayout(),
                                                     ),
-                                                  )
-                                                : Container(),
-                                            Expanded(
-                                              flex: 3,
-                                              child: LeftLayout(),
-                                            ),
-                                            _isRightShow
-                                                ? Expanded(
-                                                    flex: 1,
-                                                    child: LeftLayout(),
-                                                  )
-                                                : Container(),
-                                          ],
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Container(
-                                          height: 50,
-                                          width: 50,
-                                          child: InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                if (_isLeftShow) {
-                                                  _isLeftShow = false;
-                                                } else {
-                                                  _isLeftShow = true;
-                                                }
-                                              });
-                                            },
-                                            child: Icon(
-                                              LocalIcons.less_than,
-                                              size: 15,
-                                            ),
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              top: BorderSide(
-                                                  color: Colors.black),
-                                              right: BorderSide(
-                                                  color: Colors.black),
-                                              bottom: BorderSide(
-                                                  color: Colors.black),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topRight,
-                                        child: Container(
-                                          height: 50,
-                                          width: 50,
-                                          child: InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                if (_isRightShow) {
-                                                  _isRightShow = false;
-                                                } else {
-                                                  _isRightShow = true;
-                                                }
-                                              });
-                                            },
-                                            child: Icon(
-                                              LocalIcons.greater_than,
-                                              size: 15,
-                                            ),
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              top: BorderSide(
-                                                  color: Colors.black),
-                                              left: BorderSide(
-                                                  color: Colors.black),
-                                              bottom: BorderSide(
-                                                  color: Colors.black),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
                                   ),
-                                  Text('2'),
-                                  Text('3'),
-                                  Text('4'),
-                                  Text('5'),
-                                ]),
-                          ),
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 0),
-                            height: _showSlider ? 550.0 : 0.0,
-                            child: FooterLayout(),
-                          ),
-                        ],
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            if (_isLeftShow) {
+                                              _isLeftShow = false;
+                                            } else {
+                                              _isLeftShow = true;
+                                            }
+                                          });
+                                        },
+                                        child: Icon(
+                                          LocalIcons.less_than,
+                                          size: 15,
+                                        ),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          top: BorderSide(color: Colors.black),
+                                          right:
+                                              BorderSide(color: Colors.black),
+                                          bottom:
+                                              BorderSide(color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            if (_isRightShow) {
+                                              _isRightShow = false;
+                                            } else {
+                                              _isRightShow = true;
+                                            }
+                                          });
+                                        },
+                                        child: Icon(
+                                          LocalIcons.greater_than,
+                                          size: 15,
+                                        ),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          top: BorderSide(color: Colors.black),
+                                          left: BorderSide(color: Colors.black),
+                                          bottom:
+                                              BorderSide(color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 400,
+                              child: FooterLayout(),
+                            ),
+                          ]),
+                          Text('2'),
+                          Text('3'),
+                          Text('4'),
+                          Text('5'),
+                        ]),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
@@ -275,5 +322,26 @@ class _HomePageState extends State<HomePage>
         ),
       ),
     );
+  }
+
+  double bodyHeight() {
+    double screenSize = MediaQuery.of(context).size.height;
+    if (_showAppbar && _showInfobar) {
+      return screenSize - 115.0;
+    } else if (_showAppbar && !_showInfobar) {
+      return screenSize - 80.0;
+    } else if (!_showAppbar && !_showInfobar) {
+      return screenSize - 40.0;
+    } else {
+      return screenSize - 115.0;
+    }
+  }
+
+  int bodyDuration() {
+    if (_showAppbar && _showInfobar) {
+      return 100;
+    } else {
+      return 200;
+    }
   }
 }
