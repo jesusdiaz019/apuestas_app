@@ -1,3 +1,4 @@
+import 'package:apuestas_app/views/pages/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:expandable_group/expandable_group_widget.dart';
 
@@ -48,11 +49,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final bloc = HomeBloc();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: InkWell(
+            child: Text(widget.title),
+            onTap: () {
+              bloc.ligaList();
+            }),
       ),
       body: ListView(
         children: <Widget>[
