@@ -1,3 +1,4 @@
+import 'package:apuestas_app/views/menu/menu_view.dart';
 import 'package:flutter/material.dart';
 import 'package:apuestas_app/views/login/login_view.dart';
 import 'package:apuestas_app/views/example.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         const Locale('fr'),
         const Locale('es'),
       ],
-      home: MyExample(),
+      home: MenuView(),
     );
   }
 }

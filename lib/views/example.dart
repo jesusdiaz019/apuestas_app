@@ -1,3 +1,4 @@
+import 'package:apuestas_app/models/data_ligas.dart';
 import 'package:apuestas_app/views/pages/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:expandable_group/expandable_group_widget.dart';
@@ -57,24 +58,18 @@ class _MyHomePageState extends State<MyHomePage> {
         title: InkWell(
             child: Text(widget.title),
             onTap: () {
-              bloc.ligaList();
+              bloc.requestSearch();
             }),
       ),
-      body: ListView(
-        children: <Widget>[
-          Column(
-            children: widget.data.map((group) {
-              int index = widget.data.indexOf(group);
-              return ExpandableGroup(
-                isExpanded: index == 0,
-                header: _header('Group $index'),
-                items: _buildItems(context, group),
-                headerEdgeInsets: EdgeInsets.only(left: 16.0, right: 16.0),
-              );
-            }).toList(),
-          )
-        ],
-      ),
+      body: ListView.builder(
+          itemCount: bloc.ligas.length,
+          itemBuilder: (context, index) {
+            final morador = bloc.ligas[index];
+            return ExpandableGroup(
+              header: _header(" " + morador.pais),
+              items: _buildItems(context, morador.ligas),
+            );
+          }),
     );
   }
 
@@ -84,9 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
         fontWeight: FontWeight.bold,
       ));
 
-  List<ListTile> _buildItems(BuildContext context, List<String> items) => items
+  List<ListTile> _buildItems(BuildContext context, List<Ligas> items) => items
       .map((e) => ListTile(
-            title: Text(e),
+            title: Text(e.liga),
           ))
       .toList();
 }

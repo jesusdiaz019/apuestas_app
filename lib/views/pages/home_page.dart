@@ -1,9 +1,10 @@
 import 'package:apuestas_app/design/icons.dart';
+import 'package:apuestas_app/design/responsive_layout.dart';
+import 'package:apuestas_app/models/data_ligas.dart';
 import 'package:apuestas_app/views/layouts/footer.dart';
 import 'package:apuestas_app/views/layouts/header.dart';
-import 'package:apuestas_app/views/layouts/home/left_layout.dart';
-import 'package:apuestas_app/views/pages/deportes_page.dart';
 import 'package:apuestas_app/widgets/slider.dart';
+import 'package:expandable_group/expandable_group_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -65,13 +66,14 @@ class _HomePageState extends State<HomePage>
   bool isBarShow = true;
   bool _isRightShow = false;
   bool _isLeftShow = false;
+  bool _controllerState = true;
   int sizeScreen = 0;
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: bloc.tabs.length);
-
+    bloc.requestSearch();
     _scrollController = new ScrollController();
     _scrollControllerLeft = new ScrollController();
     _scrollControllerRight = new ScrollController();
@@ -171,30 +173,54 @@ class _HomePageState extends State<HomePage>
                                       children: [
                                         _isLeftShow
                                             ? Expanded(
-                                                flex: 1,
+                                                flex:
+                                                    !ResponsiveLayout.isIphone(
+                                                            context)
+                                                        ? 1
+                                                        : 3,
                                                 child: Scrollbar(
                                                   controller:
                                                       _scrollControllerLeft,
                                                   isAlwaysShown: true,
                                                   showTrackOnHover: true,
-                                                  child: SingleChildScrollView(
-                                                    controller:
-                                                        _scrollControllerLeft,
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          color: Colors.blue,
-                                                          height: 600,
-                                                          child: LeftLayout(),
-                                                        ),
-                                                      ],
-                                                    ),
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        color: Colors.white,
+                                                        height: 550,
+                                                        child: ListView.builder(
+                                                            controller:
+                                                                _scrollControllerLeft,
+                                                            itemCount: bloc
+                                                                .ligas.length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              final morador =
+                                                                  bloc.ligas[
+                                                                      index];
+                                                              return ExpandableGroup(
+                                                                headerEdgeInsets:
+                                                                    EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            12.0),
+                                                                header: _header(
+                                                                    morador
+                                                                        .pais),
+                                                                items: _buildItems(
+                                                                    context,
+                                                                    morador
+                                                                        .ligas),
+                                                              );
+                                                            }),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               )
                                             : Container(),
                                         Expanded(
-                                          flex: 3,
+                                          flex: 5,
                                           child: Scrollbar(
                                               controller: _scrollController,
                                               isAlwaysShown: true,
@@ -217,7 +243,11 @@ class _HomePageState extends State<HomePage>
                                         ),
                                         _isRightShow
                                             ? Expanded(
-                                                flex: 1,
+                                                flex:
+                                                    !ResponsiveLayout.isIphone(
+                                                            context)
+                                                        ? 1
+                                                        : 3,
                                                 child: Scrollbar(
                                                   controller:
                                                       _scrollControllerRight,
@@ -229,7 +259,7 @@ class _HomePageState extends State<HomePage>
                                                     child: Container(
                                                       color: Colors.blue,
                                                       height: 600,
-                                                      child: LeftLayout(),
+                                                      child: Container(),
                                                     ),
                                                   ),
                                                 ),
@@ -326,14 +356,18 @@ class _HomePageState extends State<HomePage>
 
   double bodyHeight() {
     double screenSize = MediaQuery.of(context).size.height;
+    double valPhone = 0;
+    if (ResponsiveLayout.isIphone(context)) {
+      valPhone = 27.637;
+    }
     if (_showAppbar && _showInfobar) {
-      return screenSize - 115.0;
+      return screenSize - 115.0 - valPhone;
     } else if (_showAppbar && !_showInfobar) {
-      return screenSize - 80.0;
+      return screenSize - 80.0 - valPhone;
     } else if (!_showAppbar && !_showInfobar) {
-      return screenSize - 40.0;
+      return screenSize - 40.0 - valPhone;
     } else {
-      return screenSize - 115.0;
+      return screenSize - 115.0 - valPhone;
     }
   }
 
@@ -344,4 +378,16 @@ class _HomePageState extends State<HomePage>
       return 200;
     }
   }
+
+  Widget _header(String name) => Text(name,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ));
+
+  List<ListTile> _buildItems(BuildContext context, List<Ligas> items) => items
+      .map((e) => ListTile(
+            title: Text(e.liga),
+          ))
+      .toList();
 }
