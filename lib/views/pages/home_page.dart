@@ -66,7 +66,6 @@ class _HomePageState extends State<HomePage>
   bool isBarShow = true;
   bool _isRightShow = false;
   bool _isLeftShow = false;
-  bool _controllerState = true;
   int sizeScreen = 0;
 
   @override
@@ -187,7 +186,7 @@ class _HomePageState extends State<HomePage>
                                                     children: [
                                                       Container(
                                                         color: Colors.white,
-                                                        height: 550,
+                                                        height: 514,
                                                         child: ListView.builder(
                                                             controller:
                                                                 _scrollControllerLeft,
@@ -196,7 +195,7 @@ class _HomePageState extends State<HomePage>
                                                             itemBuilder:
                                                                 (context,
                                                                     index) {
-                                                              final morador =
+                                                              final paisligas =
                                                                   bloc.ligas[
                                                                       index];
                                                               return ExpandableGroup(
@@ -205,11 +204,11 @@ class _HomePageState extends State<HomePage>
                                                                         horizontal:
                                                                             12.0),
                                                                 header: _header(
-                                                                    morador
+                                                                    paisligas
                                                                         .pais),
                                                                 items: _buildItems(
                                                                     context,
-                                                                    morador
+                                                                    paisligas
                                                                         .ligas),
                                                               );
                                                             }),
@@ -222,24 +221,19 @@ class _HomePageState extends State<HomePage>
                                         Expanded(
                                           flex: 5,
                                           child: Scrollbar(
-                                              controller: _scrollController,
-                                              isAlwaysShown: true,
-                                              showTrackOnHover: true,
-                                              child: SingleChildScrollView(
+                                            controller: _scrollController,
+                                            isAlwaysShown: true,
+                                            showTrackOnHover: true,
+                                            child: ListView.builder(
                                                 controller: _scrollController,
-                                                child: Column(
-                                                  children: [
-                                                    Container(
-                                                      height: 600,
-                                                      color: Colors.blue,
-                                                    ),
-                                                    Container(
-                                                      height: 600,
-                                                      color: Colors.red,
-                                                    ),
-                                                  ],
-                                                ),
-                                              )),
+                                                itemCount: bloc.fixtures.length,
+                                                itemBuilder: (context, index) {
+                                                  final fixture =
+                                                      bloc.fixtures[index];
+                                                  return _buildFixtures(
+                                                      fixture);
+                                                }),
+                                          ),
                                         ),
                                         _isRightShow
                                             ? Expanded(
@@ -358,7 +352,7 @@ class _HomePageState extends State<HomePage>
     double screenSize = MediaQuery.of(context).size.height;
     double valPhone = 0;
     if (ResponsiveLayout.isIphone(context)) {
-      valPhone = 27.637;
+      valPhone = 30;
     }
     if (_showAppbar && _showInfobar) {
       return screenSize - 115.0 - valPhone;
@@ -388,6 +382,19 @@ class _HomePageState extends State<HomePage>
   List<ListTile> _buildItems(BuildContext context, List<Ligas> items) => items
       .map((e) => ListTile(
             title: Text(e.liga),
+            onTap: () {
+              bloc.onTapLiga(e.id);
+            },
           ))
       .toList();
+
+  Widget _buildFixtures(fixture) {
+    return Container(
+      color: Theme.of(context).accentColor,
+      child: Card(
+          child: ListTile(
+        subtitle: Text(fixture.fecha.toString()),
+      )),
+    );
+  }
 }

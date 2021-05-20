@@ -1,3 +1,4 @@
+import 'package:apuestas_app/views/pages/home_example.dart';
 import 'package:apuestas_app/views/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -16,7 +17,7 @@ class _MenuViewState extends State<MenuView> {
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
         body: ResponsiveLayout(
-      iphone: HomePageStl(),
+      iphone: HomeExampleStl(),
       ipad: Row(
         children: [
           Expanded(

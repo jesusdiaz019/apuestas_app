@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:apuestas_app/common/debouncer.dart';
 import 'package:apuestas_app/data/repository/store_impl.dart';
 import 'package:apuestas_app/data/repository/store_repository.dart';
 import 'package:apuestas_app/models/data_ligas.dart';
+import 'package:apuestas_app/models/fixture.dart';
 import 'package:apuestas_app/models/usuario.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -11,11 +13,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 const keyLiga = 'ligas';
 
 class HomeBloc extends ChangeNotifier {
+  final debouncer = Debouncer();
+  bool loading = false;
   final StoreRepository storage = StoreImpl();
   TabController tabController;
   ScrollController scrollViewController;
   List<Usuario> usuario = [];
   List<DataLigas> ligas = [];
+  List<Fixture> fixtures = [];
   List<Tab> tabs = [
     Tab(
       icon: Icon(Icons.home_outlined),
@@ -42,7 +47,14 @@ class HomeBloc extends ChangeNotifier {
     requestSearch();
   }
 
+  void onTapLiga(liga) {
+    debouncer.run(() {
+      if (liga.isNotEmpty) addFixture(liga);
+    });
+  }
+
   void requestSearch() async {
+    loading = true;
     notifyListeners();
     try {
       final url = Uri.https('api-apuestas.herokuapp.com', 'paisliga/list');
@@ -61,6 +73,29 @@ class HomeBloc extends ChangeNotifier {
       print('xd');
     }
   }
+
+  void addFixture(String liga) async {
+    loading = true;
+    notifyListeners();
+    try {
+      final url = Uri.https('api-apuestas.herokuapp.com', 'fixture/list/$liga');
+      final response = await http.get(url);
+      print('xd');
+      print(response.statusCode); //Response status code (200)
+      print(response.body);
+
+      final data = jsonDecode(response.body) as List;
+
+      loading = false;
+
+      fixtures = data.map((e) => Fixture.fromJson(e)).toList();
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+      print('xd');
+    }
+  }
+
   /*
   void ligaList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
