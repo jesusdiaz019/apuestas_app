@@ -15,6 +15,7 @@ const keyLiga = 'ligas';
 class HomeBloc extends ChangeNotifier {
   final debouncer = Debouncer();
   bool loading = false;
+  bool listarligas = true;
   final StoreRepository storage = StoreImpl();
   TabController tabController;
   ScrollController scrollViewController;
@@ -43,14 +44,12 @@ class HomeBloc extends ChangeNotifier {
   ];
   String errorMessage = '';
 
-  void onChangedText() {
-    requestSearch();
+  void onTapLiga(liga) {
+    if (liga.isNotEmpty) addFixture(liga);
   }
 
-  void onTapLiga(liga) {
-    debouncer.run(() {
-      if (liga.isNotEmpty) addFixture(liga);
-    });
+  void onSearch() {
+    if (listarligas) requestSearch();
   }
 
   void requestSearch() async {
@@ -64,9 +63,9 @@ class HomeBloc extends ChangeNotifier {
       print(response.body);
 
       final data = jsonDecode(response.body) as List;
-      final paisligas = data.map((e) => DataLigas.fromJson(e)).toList();
-      ligas = paisligas;
-      print(paisligas);
+      ligas = data.map((e) => DataLigas.fromJson(e)).toList();
+
+      listarligas = false;
       notifyListeners();
     } catch (e) {
       print(e.toString());

@@ -22,7 +22,7 @@ class _SliderLayoutState extends State<SliderWidget> {
         CarouselSlider(
           items: imageSliders,
           options: CarouselOptions(
-              height: 550.0,
+              height: 1500.0,
               autoPlay: true,
               viewportFraction: 1,
               enlargeCenterPage: true,
@@ -67,7 +67,7 @@ final List<Widget> imageSliders = imgList
     .map((item) => Container(
           child: Image.network(
             item,
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
             width: 1600,
           ),
         ))

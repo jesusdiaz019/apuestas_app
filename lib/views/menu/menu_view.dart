@@ -38,7 +38,7 @@ class _MenuViewState extends State<MenuView> {
         children: [
           Expanded(
             flex: _size.width > 1340 ? 3 : 6,
-            child: HomePageStl(),
+            child: HomeExampleStl(),
           ),
         ],
       ),

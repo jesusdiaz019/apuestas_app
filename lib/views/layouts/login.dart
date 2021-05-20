@@ -145,15 +145,16 @@ class _LoginLayoutState extends State<LoginLayout> {
                         flex: 1,
                         child: Center(
                           child: InkWell(
-                              hoverColor: Colors.white,
-                              child: Text(
-                                '¿Olvidaste tu contraseña?',
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 15.0),
-                                textAlign: TextAlign.right,
-                              ),
-                              onTap: () => bloc2.onChangedText()),
+                            hoverColor: Colors.white,
+                            child: Text(
+                              '¿Olvidaste tu contraseña?',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 15.0),
+                              textAlign: TextAlign.right,
+                            ),
+                            onTap: () {},
+                          ),
                         ),
                       ),
                     ],
