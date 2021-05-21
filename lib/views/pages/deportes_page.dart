@@ -21,7 +21,7 @@ class _DeportesPageState extends State<DeportesPage> {
             child: Column(
               children: [
                 Expanded(
-                  flex: ResponsiveLayout.isIphone(context) ? 6 : 10,
+                  flex: ResponsiveLayout.isIphone(context) ? 4 : 10,
                   child: SliderWidget(),
                 ),
                 Expanded(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:apuestas_app/common/debouncer.dart';
 import 'package:apuestas_app/data/repository/store_impl.dart';
 import 'package:apuestas_app/data/repository/store_repository.dart';
+import 'package:apuestas_app/models/PaisEquipos.dart';
 import 'package:apuestas_app/models/data_ligas.dart';
 import 'package:apuestas_app/models/fixture.dart';
 import 'package:apuestas_app/models/usuario.dart';
@@ -22,6 +23,7 @@ class HomeBloc extends ChangeNotifier {
   List<Usuario> usuario = [];
   List<DataLigas> ligas = [];
   List<Fixture> fixtures = [];
+  List<PaisEquipos> paisequipos = [];
   List<Tab> tabs = [
     Tab(
       icon: Icon(Icons.home_outlined),
@@ -88,6 +90,29 @@ class HomeBloc extends ChangeNotifier {
       loading = false;
 
       fixtures = data.map((e) => Fixture.fromJson(e)).toList();
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+      print('xd');
+    }
+  }
+
+  void addEquipos(String equipo) async {
+    loading = true;
+    notifyListeners();
+    try {
+      final url =
+          Uri.https('api-apuestas.herokuapp.com', 'equipos/list/$equipo');
+      final response = await http.get(url);
+      print('xd');
+      print(response.statusCode); //Response status code (200)
+      print(response.body);
+
+      final data = jsonDecode(response.body) as List;
+
+      loading = false;
+
+      paisequipos = data.map((e) => PaisEquipos.fromJson(e)).toList();
       notifyListeners();
     } catch (e) {
       print(e.toString());

@@ -37,7 +37,9 @@ class ApuestasPageState extends State<ApuestasPage> {
       color: Theme.of(context).accentColor,
       child: Card(
           child: ListTile(
-        subtitle: Text(fixture.fecha.toString()),
+        subtitle: Text(
+          fixture.fecha.toString(),
+        ),
       )),
     );
   }

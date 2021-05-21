@@ -71,7 +71,6 @@ class _HomeExampleState extends State<HomeExample> {
       child: Scaffold(
         drawerEnableOpenDragGesture: false,
         drawerScrimColor: Colors.transparent,
-        endDrawerEnableOpenDragGesture: false,
         drawer: Container(
           margin: EdgeInsets.only(top: 135),
           alignment: Alignment.bottomLeft,
