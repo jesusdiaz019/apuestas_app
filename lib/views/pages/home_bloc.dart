@@ -90,6 +90,7 @@ class HomeBloc extends ChangeNotifier {
       loading = false;
 
       fixtures = data.map((e) => Fixture.fromJson(e)).toList();
+
       notifyListeners();
     } catch (e) {
       print(e.toString());
