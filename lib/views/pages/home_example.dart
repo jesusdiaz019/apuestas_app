@@ -51,9 +51,17 @@ class HomeExample extends StatefulWidget {
 
 class _HomeExampleState extends State<HomeExample> {
   GlobalKey<ApuestasPageState> _keyApuestas = GlobalKey();
+  final _scrollbarLeft = ScrollController();
   final bloc = HomeBloc();
   final login = LoginBloc();
   final _pageController = PageController(initialPage: 0);
+  bool _homeTab = true;
+  bool _deportTab = false;
+  bool _apuestaTab = false;
+  bool _promTab = false;
+  bool _deportvirTab = false;
+  String _liga = "";
+  String _pais = "";
   bool _showLigaBar = false;
   AlertDialog dialog = AlertDialog(
     scrollable: true,
@@ -76,18 +84,24 @@ class _HomeExampleState extends State<HomeExample> {
           alignment: Alignment.bottomLeft,
           width: 200,
           child: Drawer(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemBuilder: (BuildContext context, int index) {
-                final paisligas = bloc.ligas[index];
-                return ListTile(
-                  title: _header(paisligas.pais),
-                  subtitle: Column(
-                    children: _buildItems(paisligas.ligas),
-                  ),
-                );
-              },
-              itemCount: bloc.ligas.length,
+            child: Scrollbar(
+              controller: _scrollbarLeft,
+              isAlwaysShown: true,
+              showTrackOnHover: true,
+              child: ListView.builder(
+                controller: _scrollbarLeft,
+                padding: const EdgeInsets.all(8),
+                itemBuilder: (BuildContext context, int index) {
+                  final paisligas = bloc.ligas[index];
+                  return ListTile(
+                    title: _header(paisligas.pais),
+                    subtitle: Column(
+                      children: _buildItems(paisligas.ligas, paisligas.pais),
+                    ),
+                  );
+                },
+                itemCount: bloc.ligas.length,
+              ),
             ),
           ),
         ),
@@ -204,6 +218,180 @@ class _HomeExampleState extends State<HomeExample> {
                     ),
                     flex: 5,
                   ),
+                  Visibility(
+                    visible: ResponsiveLayout.isIphone(context) ? false : true,
+                    child: Expanded(
+                      flex: 12,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              child: Container(
+                                decoration: _homeTab
+                                    ? BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            width: 3,
+                                          ),
+                                        ),
+                                      )
+                                    : BoxDecoration(),
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: 12.0,
+                                  ),
+                                  child: Icon(
+                                    Icons.home_outlined,
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                _pageController.animateToPage(0,
+                                    duration: Duration(seconds: 1),
+                                    curve: Curves.easeOutSine);
+                                setState(() {
+                                  _showLigaBar = false;
+                                  _homeTab = true;
+                                  _deportTab = false;
+                                  _apuestaTab = false;
+                                  _promTab = false;
+                                  _deportvirTab = false;
+                                });
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              child: Container(
+                                decoration: _deportTab
+                                    ? BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            width: 3,
+                                          ),
+                                        ),
+                                      )
+                                    : BoxDecoration(),
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: 12.0,
+                                  ),
+                                  child: Text(
+                                    "Deportes",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                _pageController.animateToPage(1,
+                                    duration: Duration(seconds: 1),
+                                    curve: Curves.easeOutSine);
+                                setState(() {
+                                  _showLigaBar = true;
+                                  _deportTab = true;
+                                  _homeTab = false;
+                                  _apuestaTab = false;
+                                  _promTab = false;
+                                  _deportvirTab = false;
+                                });
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration: _apuestaTab
+                                  ? BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Theme.of(context).primaryColor,
+                                          width: 3,
+                                        ),
+                                      ),
+                                    )
+                                  : BoxDecoration(),
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: 12.0,
+                                ),
+                                child: Text(
+                                  "Apuestas en vivo",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration: _promTab
+                                  ? BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Theme.of(context).primaryColor,
+                                          width: 3,
+                                        ),
+                                      ),
+                                    )
+                                  : BoxDecoration(),
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: 12.0,
+                                ),
+                                child: Text(
+                                  "Promociones",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration: _deportvirTab
+                                  ? BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Theme.of(context).primaryColor,
+                                          width: 3,
+                                        ),
+                                      ),
+                                    )
+                                  : BoxDecoration(),
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: 12.0,
+                                ),
+                                child: Text(
+                                  "Deportes Virtuales",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   Expanded(
                     flex: 1,
                     child: Center(
@@ -288,33 +476,7 @@ class _HomeExampleState extends State<HomeExample> {
                             margin: EdgeInsets.symmetric(
                               horizontal: 15,
                             ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 20,
-                                  width: 20,
-                                  margin: EdgeInsets.only(
-                                    right: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(
-                                      25,
-                                    ),
-                                    border: Border.all(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  "EN VIVO",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            child: _routesView(),
                           ),
                         ),
                         Expanded(
@@ -340,6 +502,35 @@ class _HomeExampleState extends State<HomeExample> {
     );
   }
 
+  Widget _routesView() => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Row(
+          children: [
+            Text(
+              _pais,
+              style: TextStyle(
+                fontSize: 18,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            Text(
+              " / ",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              _liga,
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        ),
+      );
+
   Widget _buildPage(index) {
     Widget send;
     if (index == 0) {
@@ -359,7 +550,7 @@ class _HomeExampleState extends State<HomeExample> {
             )),
       );
 
-  List<GestureDetector> _buildItems(List<Ligas> items) => items
+  List<GestureDetector> _buildItems(List<Ligas> items, String pais) => items
       .map(
         (e) => GestureDetector(
           child: Padding(
@@ -375,6 +566,8 @@ class _HomeExampleState extends State<HomeExample> {
           onTap: () {
             setState(() {
               _keyApuestas.currentState.updateList(e.id);
+              _liga = e.liga;
+              _pais = pais;
               Navigator.pop(context);
             });
           },

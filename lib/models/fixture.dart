@@ -8,49 +8,45 @@ String fixtureToJson(List<Fixture> data) =>
 
 class Fixture {
   Fixture({
-    this.equipos,
-    this.score,
-    this.estado,
     this.id,
-    this.liga,
+    this.equipos,
+    this.ligaId,
     this.fecha,
     this.lugar,
     this.estadio,
-    this.v,
+    this.score,
+    this.estado,
   });
 
-  Equipos equipos;
-  Score score;
-  Estado estado;
   String id;
-  String liga;
+  Equipos equipos;
+  String ligaId;
   DateTime fecha;
   String lugar;
   String estadio;
-  int v;
+  Score score;
+  Estado estado;
 
   factory Fixture.fromJson(Map<String, dynamic> json) => Fixture(
-        equipos: Equipos.fromJson(json["equipos"]),
-        score: Score.fromJson(json["score"]),
-        estado: Estado.fromJson(json["estado"]),
         id: json["_id"],
-        liga: json["liga"],
+        equipos: Equipos.fromJson(json["equipos"]),
+        ligaId: json["liga_id"],
         fecha: DateTime.parse(json["fecha"]),
         lugar: json["lugar"],
         estadio: json["estadio"],
-        v: json["__v"],
+        score: Score.fromJson(json["score"]),
+        estado: Estado.fromJson(json["estado"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "equipos": equipos.toJson(),
-        "score": score.toJson(),
-        "estado": estado.toJson(),
         "_id": id,
-        "liga": liga,
+        "equipos": equipos.toJson(),
+        "liga_id": ligaId,
         "fecha": fecha.toIso8601String(),
         "lugar": lugar,
         "estadio": estadio,
-        "__v": v,
+        "score": score.toJson(),
+        "estado": estado.toJson(),
       };
 }
 
@@ -60,39 +56,58 @@ class Equipos {
     this.visitante,
   });
 
-  Local local;
-  Local visitante;
+  List<Local> local;
+  List<Local> visitante;
 
   factory Equipos.fromJson(Map<String, dynamic> json) => Equipos(
-        local: json["local"] == null ? null : Local.fromJson(json["local"]),
-        visitante: json["visitante"] == null
-            ? null
-            : Local.fromJson(json["visitante"]),
+        local: List<Local>.from(json["local"].map((x) => Local.fromJson(x))),
+        visitante:
+            List<Local>.from(json["visitante"].map((x) => Local.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "local": local == null ? null : local.toJson(),
-        "visitante": visitante == null ? null : visitante.toJson(),
+        "local": List<dynamic>.from(local.map((x) => x.toJson())),
+        "visitante": List<dynamic>.from(visitante.map((x) => x.toJson())),
       };
 }
 
 class Local {
   Local({
     this.id,
-    this.ganador,
+    this.name,
+    this.pais,
+    this.fundado,
+    this.logo,
+    this.nacional,
+    this.v,
   });
 
   String id;
-  dynamic ganador;
+  String name;
+  String pais;
+  String fundado;
+  String logo;
+  bool nacional;
+  int v;
 
   factory Local.fromJson(Map<String, dynamic> json) => Local(
         id: json["_id"],
-        ganador: json["ganador"],
+        name: json["name"],
+        pais: json["pais"],
+        fundado: json["fundado"] == null ? null : json["fundado"],
+        logo: json["logo"],
+        nacional: json["nacional"],
+        v: json["__v"],
       );
 
   Map<String, dynamic> toJson() => {
         "_id": id,
-        "ganador": ganador,
+        "name": name,
+        "pais": pais,
+        "fundado": fundado == null ? null : fundado,
+        "logo": logo,
+        "nacional": nacional,
+        "__v": v,
       };
 }
 
@@ -105,7 +120,7 @@ class Estado {
 
   String long;
   String short;
-  dynamic tiempo;
+  String tiempo;
 
   factory Estado.fromJson(Map<String, dynamic> json) => Estado(
         long: json["long"],
@@ -128,16 +143,16 @@ class Score {
     this.penales,
   });
 
-  Equipos mediotiempo;
-  Equipos tiempocompleto;
-  Equipos tiempoextra;
-  Equipos penales;
+  Mediotiempo mediotiempo;
+  Mediotiempo tiempocompleto;
+  Mediotiempo tiempoextra;
+  Mediotiempo penales;
 
   factory Score.fromJson(Map<String, dynamic> json) => Score(
-        mediotiempo: Equipos.fromJson(json["mediotiempo"]),
-        tiempocompleto: Equipos.fromJson(json["tiempocompleto"]),
-        tiempoextra: Equipos.fromJson(json["tiempoextra"]),
-        penales: Equipos.fromJson(json["penales"]),
+        mediotiempo: Mediotiempo.fromJson(json["mediotiempo"]),
+        tiempocompleto: Mediotiempo.fromJson(json["tiempocompleto"]),
+        tiempoextra: Mediotiempo.fromJson(json["tiempoextra"]),
+        penales: Mediotiempo.fromJson(json["penales"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -145,5 +160,25 @@ class Score {
         "tiempocompleto": tiempocompleto.toJson(),
         "tiempoextra": tiempoextra.toJson(),
         "penales": penales.toJson(),
+      };
+}
+
+class Mediotiempo {
+  Mediotiempo({
+    this.local,
+    this.visitante,
+  });
+
+  String local;
+  String visitante;
+
+  factory Mediotiempo.fromJson(Map<String, dynamic> json) => Mediotiempo(
+        local: json["local"] == null ? null : json["local"],
+        visitante: json["visitante"] == null ? null : json["visitante"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "local": local == null ? null : local,
+        "visitante": visitante == null ? null : visitante,
       };
 }

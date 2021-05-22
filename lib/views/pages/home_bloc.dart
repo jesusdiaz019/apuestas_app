@@ -94,30 +94,7 @@ class HomeBloc extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print(e.toString());
-      print('xd');
-    }
-  }
-
-  void addEquipos(String equipo) async {
-    loading = true;
-    notifyListeners();
-    try {
-      final url =
-          Uri.https('api-apuestas.herokuapp.com', 'equipos/list/$equipo');
-      final response = await http.get(url);
-      print('xd');
-      print(response.statusCode); //Response status code (200)
-      print(response.body);
-
-      final data = jsonDecode(response.body) as List;
-
-      loading = false;
-
-      paisequipos = data.map((e) => PaisEquipos.fromJson(e)).toList();
-      notifyListeners();
-    } catch (e) {
-      print(e.toString());
-      print('xd');
+      print('xde');
     }
   }
 
